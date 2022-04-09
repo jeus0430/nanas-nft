@@ -3,75 +3,78 @@ import { useState, useEffect } from 'react';
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { CalendarIcon, ClockIcon, DiscordIcon, MoneyIcon, TwitterIcon } from "../components/svgIcons";
-import {ethers} from 'ethers';
+import { ethers } from 'ethers';
 import { NextPage } from "next";
 import myEpicNft from "../Nanas.json";
 
 const CONTRACT_ADDRESS = '0xe00deb3799629F72636FF384C4763D0F80af5773'
 // 0x4F47Bc496083C727c5fbe3CE9CDf2B0f6496270c
+// 0xe34cf1a62471cd7723e02ce06311a6d66bc7dde7
+// 1SIE8_HHpeQX0CZ_6CXQkBWe4ZLdbHhCBkFFDlHlLxIc
+// 1fD4ShKtmayKXr12_vAmfwV6dp75JPmX7fHBJ8j_Uy4E
 const Mint: NextPage = () => {
-    const router = useRouter()
-    const [currentAccount, setCurrentAccount] = useState('')
-    const [isMinting, setIsMinting] = useState(false)
-    const [etherScanLink, setEtherScanLink] = useState<undefined | string>()
-    const [openSeaLink, setOpenSeaLink] = useState<undefined | string>()
-    const [rightNet, setRightNet] = useState(false)
-    const checkIfWalletIsConnected = async () => {
-        const { ethereum } = window as any
-    
-        if (!ethereum) {
-          console.log('Make sure you have metamask!')
-          return
-        } else {
-          console.log('We have the ethereum object', ethereum)
-        }
-    
-        const accounts = await ethereum.request({ method: 'eth_accounts' })
-    
-        if (accounts.length !== 0) {
-          const account = accounts[0]
-          console.log('Found an authorized account:', account)
-          setCurrentAccount(account)
-          // Setup listener! This is for the case where a user comes to our site
-          // and ALREADY had their wallet connected + authorized.
-          // setupEventListener()
-          setupNetworkListener()
-        } else {
-          console.log('No authorized account found')
-        }
+  const router = useRouter()
+  const [currentAccount, setCurrentAccount] = useState('')
+  const [isMinting, setIsMinting] = useState(false)
+  const [etherScanLink, setEtherScanLink] = useState<undefined | string>()
+  const [openSeaLink, setOpenSeaLink] = useState<undefined | string>()
+  const [rightNet, setRightNet] = useState(false)
+  const checkIfWalletIsConnected = async () => {
+    const { ethereum } = window as any
+
+    if (!ethereum) {
+      console.log('Make sure you have metamask!')
+      return
+    } else {
+      console.log('We have the ethereum object', ethereum)
     }
 
-    /*
-    * Implement your connectWallet method here
-    */
-    const connectWallet = async () => {
-      try {
-        const { ethereum } = window as any
+    const accounts = await ethereum.request({ method: 'eth_accounts' })
 
-        if (!ethereum) {
-          alert('Get MetaMask!')
-          return
-        }
+    if (accounts.length !== 0) {
+      const account = accounts[0]
+      console.log('Found an authorized account:', account)
+      setCurrentAccount(account)
+      // Setup listener! This is for the case where a user comes to our site
+      // and ALREADY had their wallet connected + authorized.
+      // setupEventListener()
+      setupNetworkListener()
+    } else {
+      console.log('No authorized account found')
+    }
+  }
 
-        /*
-        * Fancy method to request access to account.
-        */
-        const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+  /*
+  * Implement your connectWallet method here
+  */
+  const connectWallet = async () => {
+    try {
+      const { ethereum } = window as any
 
-        /*
-        * Boom! This should print out public address once we authorize Metamask.
-        */
-        console.log('Connected', accounts[0])
-        setCurrentAccount(accounts[0])
-        // Setup listener! This is for the case where a user comes to our site
-        // and connected their wallet for the first time.
-        // setupEventListener()
-        setupNetworkListener()
-        // checkNetwork()
-      } catch (error) {
-        console.log(error)
+      if (!ethereum) {
+        alert('Get MetaMask!')
+        return
       }
+
+      /*
+      * Fancy method to request access to account.
+      */
+      const accounts = await ethereum.request({ method: 'eth_requestAccounts' })
+
+      /*
+      * Boom! This should print out public address once we authorize Metamask.
+      */
+      console.log('Connected', accounts[0])
+      setCurrentAccount(accounts[0])
+      // Setup listener! This is for the case where a user comes to our site
+      // and connected their wallet for the first time.
+      // setupEventListener()
+      setupNetworkListener()
+      // checkNetwork()
+    } catch (error) {
+      console.log(error)
     }
+  }
 
   // Setup our listener.
   // const setupEventListener = async () => {
@@ -114,7 +117,7 @@ const Mint: NextPage = () => {
         const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft, signer)
 
         console.log('Going to pop wallet now to pay gas...')
-        const nftTxn = await connectedContract.mintToken(1, {value: ethers.utils.parseUnits("0.01", 8)})
+        const nftTxn = await connectedContract.mintToken(1, { value: ethers.utils.parseUnits("0.01", 8) })
         setIsMinting(true)
         alert('Mining... please wait. This could take a couple of minutes')
         await nftTxn.wait()
@@ -197,42 +200,42 @@ const Mint: NextPage = () => {
       </Button>
     )
   }
-    return (
-        <div className="container">
-            <div className="main">
-                <div className="mint-page">
-                    <div className="mint-media">
-                        {/* eslint-disable-next-line */}
-                        <img
-                            src="/home-2.jpg"
-                            alt=""
-                        />
-                    </div>
-                    <div className="mint-content">
-                        <h2>CroBoys</h2>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
-                        <h4><span><CalendarIcon /></span>March 23rd</h4>
-                        <h4><span><ClockIcon /></span>5pm UTC</h4>
-                        <h4><span><MoneyIcon /></span>150 Cro</h4>
-                        <div className="mint-actions">
-                            {(currentAccount === '' || !rightNet) ? renderNotConnectedContainer() : renderMintUI()}
+  return (
+    <div className="container">
+      <div className="main">
+        <div className="mint-page">
+          <div className="mint-media">
+            {/* eslint-disable-next-line */}
+            <img
+              src="/home-2.jpg"
+              alt=""
+            />
+          </div>
+          <div className="mint-content">
+            <h2>CroBoys</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation</p>
+            <h4><span><CalendarIcon /></span>March 23rd</h4>
+            <h4><span><ClockIcon /></span>5pm UTC</h4>
+            <h4><span><MoneyIcon /></span>150 Cro</h4>
+            <div className="mint-actions">
+              {(currentAccount === '' || !rightNet) ? renderNotConnectedContainer() : renderMintUI()}
 
-                            <Link href="/#">
-                                <a>
-                                    <DiscordIcon color="white" size={30} />
-                                </a>
-                            </Link>
-                            <Link href="/#">
-                                <a>
-                                    <TwitterIcon color="white" size={30} />
-                                </a>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
+              <Link href="/#">
+                <a>
+                  <DiscordIcon color="white" size={30} />
+                </a>
+              </Link>
+              <Link href="/#">
+                <a>
+                  <TwitterIcon color="white" size={30} />
+                </a>
+              </Link>
             </div>
+          </div>
         </div>
-    )
+      </div>
+    </div>
+  )
 }
 
 export default Mint
